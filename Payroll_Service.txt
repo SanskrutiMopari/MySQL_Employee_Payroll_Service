@@ -1,0 +1,297 @@
+//UC1
+mysql> create database payroll_service;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| payroll_service    |
+| performance_schema |
+| sakila             |
+| student            |
+| sys                |
+| world              |
++--------------------+
+12 rows in set (0.00 sec)
+
+mysql> Use payroll_service;
+Database changed
+----------------------------------------------------------------------------------------------------------
+//UC2
+mysql> create table employee_payroll
+    -> (
+    -> Id int not null auto_increment,
+    -> Name varchar(20) not null,
+    -> Salary int NOT NULL,
+    -> Start date not null,
+    -> primary key(Id)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> desc employee_payroll;
++--------+-------------+------+-----+---------+----------------+
+| Field  | Type        | Null | Key | Default | Extra          |
++--------+-------------+------+-----+---------+----------------+
+| Id     | int         | NO   | PRI | NULL    | auto_increment |
+| Name   | varchar(20) | NO   |     | NULL    |                |
+| Salary | int         | NO   |     | NULL    |                |
+| Start  | date        | NO   |     | NULL    |                |
++--------+-------------+------+-----+---------+----------------+
+4 rows in set (0.01 sec)
+----------------------------------------------------------------------------------------------------------
+//UC3
+mysql> insert into employee_payroll (Name, Salary, Start) values
+    -> ('Bharat', 80000, '2022-09-29'),
+    -> ('Yash', 80000, '2022-09-28'),
+    -> ('Mohit', 90000, '2022-07-05');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+----------------------------------------------------------------------------------------------------------
+//UC4
+mysql> select * from employee_payroll;
++----+--------+--------+------------+
+| Id | Name   | Salary | Start      |
++----+--------+--------+------------+
+|  1 | Bharat |  80000 | 2022-09-29 |
+|  2 | Yash   |  80000 | 2022-09-28 |
+|  3 | Mohit  |  90000 | 2022-07-05 |
++----+--------+--------+------------+
+3 rows in set (0.00 sec)
+----------------------------------------------------------------------------------------------------------
+//UC5
+mysql> select Salary from employee_payroll where Name='Mohit';
++--------+
+| Salary |
++--------+
+|  90000 |
++--------+
+1 row in set (0.00 sec)
+
+mysql> select Salary from employee_payroll where Start between CAST('2022-07-05' AS DATE) AND DATE(NOW());
++--------+
+| Salary |
++--------+
+|  80000 |
+|  80000 |
+|  90000 |
++--------+
+3 rows in set (0.00 sec)
+----------------------------------------------------------------------------------------------------------
+//UC6
+mysql> insert into employee_payroll (Name, Salary, Start) values
+    -> ('Aachal', 80000, '2022-05-10'),
+    -> ('Sonal', 80000, '2022-07-24');
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+------------+
+| Id | Name   | Salary | Start      |
++----+--------+--------+------------+
+|  1 | Bharat |  80000 | 2022-09-29 |
+|  2 | Yash   |  80000 | 2022-09-28 |
+|  3 | Mohit  |  90000 | 2022-07-05 |
+|  4 | Aachal |  80000 | 2022-05-10 |
+|  5 | Sonal  |  80000 | 2022-07-24 |
++----+--------+--------+------------+
+5 rows in set (0.00 sec)
+
+mysql> alter table employee_payroll add Gender char(1);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> update employee_payroll set Gender='F' where Name = 'Sonal' or Name='Aachal';
+Query OK, 2 rows affected (0.00 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> update employee_payroll set Gender='M' where Name = 'Bharat' or Name='Yash' or Name='Mohit';
+Query OK, 3 rows affected (0.00 sec)
+Rows matched: 3  Changed: 3  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+------------+--------+
+| Id | Name   | Salary | Start      | Gender |
++----+--------+--------+------------+--------+
+|  1 | Bharat |  80000 | 2022-09-29 | M      |
+|  2 | Yash   |  80000 | 2022-09-28 | M      |
+|  3 | Mohit  |  90000 | 2022-07-05 | M      |
+|  4 | Aachal |  80000 | 2022-05-10 | F      |
+|  5 | Sonal  |  80000 | 2022-07-24 | F      |
++----+--------+--------+------------+--------+
+5 rows in set (0.00 sec)
+----------------------------------------------------------------------------------------------------------
+//UC7
+mysql> select SUM(Salary) as TotalSalary from employee_payroll where Gender='F' group by Gender;
++-------------+
+| TotalSalary |
++-------------+
+|      160000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select AVG(Salary) from employee_payroll where Gender='F' group by Gender;
++-------------+
+| AVG(Salary) |
++-------------+
+|  80000.0000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select MAX(Salary) from employee_payroll where Gender='F' group by Gender;
++-------------+
+| MAX(Salary) |
++-------------+
+|       80000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select MIN(Salary) from employee_payroll where Gender='F' group by Gender;
++-------------+
+| MIN(Salary) |
++-------------+
+|       80000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select COUNT(Id) from employee_payroll where Gender='F' group by Gender;
++-----------+
+| COUNT(Id) |
++-----------+
+|         2 |
++-----------+
+1 row in set (0.00 sec)
+
+mysql> select SUM(Salary) as TotalSalary from employee_payroll where Gender='M' group by Gender;
++-------------+
+| TotalSalary |
++-------------+
+|      250000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select AVG(Salary) from employee_payroll where Gender='M' group by Gender;
++-------------+
+| AVG(Salary) |
++-------------+
+|  83333.3333 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select MAX(Salary) from employee_payroll where Gender='M' group by Gender;
++-------------+
+| MAX(Salary) |
++-------------+
+|       90000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select MIN(Salary) from employee_payroll where Gender='M' group by Gender;
++-------------+
+| MIN(Salary) |
++-------------+
+|       80000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select COUNT(Id) from employee_payroll where Gender='M' group by Gender;
++-----------+
+| COUNT(Id) |
++-----------+
+|         3 |
++-----------+
+1 row in set (0.00 sec)
+----------------------------------------------------------------------------------------------------------
+//UC8
+mysql> alter table employee_payroll add PhoneNumber varchar(10);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table employee_payroll add Address varchar(20) NOT NULL default 'Tumsar';
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table employee_payroll add Department varchar(20) NOT NULL default '';
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> update employee_payroll set PhoneNumber='7559205894' where Name = 'Bharat';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update employee_payroll set PhoneNumber='9158924884' where Name = 'Yash';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update employee_payroll set PhoneNumber='9975481258' where Name='Mohit';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update employee_payroll set PhoneNumber='7775892458' where Name='Sonal';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update employee_payroll set PhoneNumber='7484464458' where Name='Aachal';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql>
+mysql> update employee_payroll set Department='HR' where Name = 'Bharat' or Name='Yash';
+Query OK, 2 rows affected (0.00 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> update employee_payroll set Department='Designing' where Name = 'Aachal' or Name = 'Sonal';
+Query OK, 2 rows affected (0.00 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> update employee_payroll set Department='Marketing' where Name = 'Mohit';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+------------+--------+-------------+---------+------------+
+| Id | Name   | Salary | Start      | Gender | PhoneNumber | Address | Department |
++----+--------+--------+------------+--------+-------------+---------+------------+
+|  1 | Bharat |  80000 | 2022-09-29 | M      | 7559205894  | Tumsar  | HR         |
+|  2 | Yash   |  80000 | 2022-09-28 | M      | 9158924884  | Tumsar  | HR         |
+|  3 | Mohit  |  90000 | 2022-07-05 | M      | 9975481258  | Tumsar  | Marketing  |
+|  4 | Aachal |  80000 | 2022-05-10 | F      | 7484464458  | Tumsar  | Designing  |
+|  5 | Sonal  |  80000 | 2022-07-24 | F      | 7775892458  | Tumsar  | Designing  |
++----+--------+--------+------------+--------+-------------+---------+------------+
+5 rows in set (0.00 sec)
+----------------------------------------------------------------------------------------------------------
+//UC9
+mysql> alter table employee_payroll add BasicPay decimal(10, 2) NOT NULL default 0;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table employee_payroll add Deductions decimal(10, 2) NOT NULL default 0;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table employee_payroll add TaxablePay decimal(10, 2) NOT NULL default 0;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table employee_payroll add IncomeTax decimal(10, 2) NOT NULL default 0;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table employee_payroll add NetPay decimal(10, 2) NOT NULL default 0;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+------------+--------+-------------+---------+------------+----------+------------+------------+-----------+--------+
+| Id | Name   | Salary | Start      | Gender | PhoneNumber | Address | Department | BasicPay | Deductions | TaxablePay | IncomeTax | NetPay |
++----+--------+--------+------------+--------+-------------+---------+------------+----------+------------+------------+-----------+--------+
+|  1 | Bharat |  80000 | 2022-09-29 | M      | 7559205894  | Tumsar  | HR         |     0.00 |       0.00 |       0.00 |      0.00 |   0.00 |
+|  2 | Yash   |  80000 | 2022-09-28 | M      | 9158924884  | Tumsar  | HR         |     0.00 |       0.00 |       0.00 |      0.00 |   0.00 |
+|  3 | Mohit  |  90000 | 2022-07-05 | M      | 9975481258  | Tumsar  | Marketing  |     0.00 |       0.00 |       0.00 |      0.00 |   0.00 |
+|  4 | Aachal |  80000 | 2022-05-10 | F      | 7484464458  | Tumsar  | Designing  |     0.00 |       0.00 |       0.00 |      0.00 |   0.00 |
+|  5 | Sonal  |  80000 | 2022-07-24 | F      | 7775892458  | Tumsar  | Designing  |     0.00 |       0.00 |       0.00 |      0.00 |   0.00 |
++----+--------+--------+------------+--------+-------------+---------+------------+----------+------------+------------+-----------+--------+
+5 rows in set (0.00 sec)
